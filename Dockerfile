@@ -1,23 +1,24 @@
 # Original credit: https://github.com/jpetazzo/dockvpn
 
 # Smallest base image
-FROM alpine:3.9
+FROM alpine:latest
 
 LABEL maintainer="Kyle Manna <kyle@kylemanna.com>"
 
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
-    apk add --update openvpn iptables bash easy-rsa=3.0.5-r0 openvpn-auth-pam google-authenticator pamtester python3 && \
+    apk add --update openvpn iptables bash easy-rsa openvpn-auth-pam google-authenticator pamtester libqrencode && \
     ln -s /usr/share/easy-rsa/easyrsa /usr/local/bin && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
-ENV AWSCLI_VERSION=1.16.169
-
 RUN apk --no-cache update && \
-    apk --no-cache add python py-pip py-setuptools ca-certificates groff less bash make jq gettext-dev curl wget g++ zip git && \
-    pip --no-cache-dir install awscli==$AWSCLI_VERSION && \
+    apk --no-cache add python3 py3-pip py3-setuptools ca-certificates groff less bash make jq gettext-dev curl wget g++ zip git && \
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
     update-ca-certificates && \
     rm -rf /var/cache/apk/*
+
 
 # Needed by scripts
 ENV OPENVPN /etc/openvpn
