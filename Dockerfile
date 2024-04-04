@@ -7,15 +7,12 @@ LABEL maintainer="Kyle Manna <kyle@kylemanna.com>"
 
 # Testing: pamtester
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
-    apk add --update openvpn iptables bash easy-rsa openvpn-auth-pam google-authenticator pamtester libqrencode && \
+    apk add --update aws-cli openvpn iptables bash easy-rsa openvpn-auth-pam google-authenticator pamtester libqrencode && \
     ln -s /usr/share/easy-rsa/easyrsa /usr/local/bin && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
 RUN apk --no-cache update && \
     apk --no-cache add python3 py3-pip py3-setuptools ca-certificates groff less bash make jq gettext-dev curl wget g++ zip git && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
     update-ca-certificates && \
     rm -rf /var/cache/apk/*
 
