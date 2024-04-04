@@ -1,7 +1,21 @@
 # Original credit: https://github.com/jpetazzo/dockvpn
 
+FROM alpine:3.19.1 as awscli-installer
+
+# Install Python and pip
+RUN apk add --no-cache python3 py3-pip && \
+    python3 -m venv /awscli-venv && \
+    source /awscli-venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install awscli
+
 # Smallest base image
 FROM alpine:3.19.1
+# Copy the virtual environment from the previous stage
+COPY --from=awscli-installer /awscli-venv /awscli-venv
+
+# Add the virtual environment to PATH so aws-cli commands can be used directly
+ENV PATH="/awscli-venv/bin:$PATH"
 
 LABEL maintainer="Kyle Manna <kyle@kylemanna.com>"
 
@@ -12,7 +26,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/reposi
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
 RUN apk --no-cache update && \
-    apk --no-cache add python3 py3-pip py3-setuptools ca-certificates groff less bash make jq gettext-dev curl wget g++ zip git aws-cli && \
+    apk --no-cache add python3 py3-pip py3-setuptools ca-certificates groff less bash make jq gettext-dev curl wget g++ zip git && \
     update-ca-certificates && \
     rm -rf /var/cache/apk/*
 
