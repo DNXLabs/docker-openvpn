@@ -1,7 +1,7 @@
 # Original credit: https://github.com/jpetazzo/dockvpn
 
 # Smallest base image
-FROM alpine:3.20.3
+FROM alpine:3.20.10
 
 # Add the virtual environment to PATH so aws-cli commands can be used directly
 ENV PATH="/awscli-venv/bin:$PATH"
